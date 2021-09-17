@@ -9,6 +9,8 @@ output:
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
+knitr::opts_chunk$set(error = TRUE)
+
 library(DT)
 library(dplyr)
 library(tidyverse)
@@ -208,9 +210,10 @@ The function contains twelve similarity measures for nominal data summarized by 
 
 ```{r}
 # creating an object with results of hierarchical clustering of
-hca.object <- nomclust(peo[,38:42], measure = "lin", method = "average",
+    hca.object <- nomclust(peo[,38:42], measure = "lin", method = "average",
      clu.high = 5, prox = TRUE, opt = FALSE)
 ```
+
 
 
 ```{r}
@@ -229,13 +232,13 @@ peo.mem <- as.data.frame(hca.object$mem)
 # obtaining a proximity matrix
 peo.prox <- as.matrix(hca.object$prox)
 
-# setting the maximal number of objects for which a proximity matrix is provided in the output to 30 
-hca.object <- nomclust(peo[,38:42], measure = "lin", method = "average", clu.high = 5, prox = 30, opt = FALSE)
+# setting the maximal number of objects for which a proximity matrix is provided in the output to 15 
+hca.object <- nomclust(peo, measure = "lin", method = "average", clu.high = 5, prox = 15, opt = FALSE)
 ```
 
 This dendrogram provides a visualization of the hierarchical relationship between the 5 clusters. We can see cluster 1 to 4 share the same parent. This is the case in real-life where PEO Tiers 1 and 2 are very closely related. It is interesting to note there is futher separation between Tier 1 PEO's.
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE, error=TRUE}
 dend.plot(
       hca.object,
       clusters = "BIC",
@@ -248,21 +251,21 @@ dend.plot(
 
 The output of the nomclust function has a form of a list with up to five components. The mem component contains cluster memberships for all cases. Because the output would be large, only first six rows of the output are displayed.
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 clu_mem <- head(peo.mem) 
 clu_mem
 ```
 
 The output contains values for all the evaluation criteria presented in the table below for the defined range of clusters. In the first row, the WCM and WCE coefficients. The other evaluation criteria have always symbol NA in this row. The other rows represent the within-cluster variability which decreases as well. When studying the PSFM and PSFE coefficients, both of them prefer the five-cluster solution.
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 clu_eval <- peo.eval
 clu_eval
 ```
 
 As mentioned, the eval() function provides seven evaluation criteria as a method to check on how the variability effects exist within each cluster. The criterias in this instance points to cluster 1 having the best values and diminishes from that point to the following clusters. 
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE, error=TRUE}
 eval.plot(
   hca.object,
   criteria = "all",
@@ -279,6 +282,10 @@ In this project I used 'Nomclust' package to perform clustering analysis for det
 characterized by nominal variables requires multiple manipulations under previous methods which exists in R. With the advent of this specific package, clustering analysis for these types of dataset can be performed efficiently. The package performed analysis well, however, requires performance optimization, because proximity matrices computation takes a lot of computational time by large datasets. In this instance, processing took approximately 4 hours to run on this dataset of 10,730 points. I have determined that the survey rankings, HealthRating, WCRating, Strategy, Cost and Support can play an important role in determining cluster formation. This in turn coincides generally with the PEO tiers.
 
 Further analysis can be performed to gain competitive business advantage. The two areas I see where PEO providers can differentiate their services is by understanding how PEO users rank service factors within their immediate PEO competitors or to fill in niche services which corresponds to areas of under-utilization by PEO users.
+
+####Video Recording
+
+<https://www.youtube.com/watch?v=fkTttGpZF20>
 
 ####References
 
